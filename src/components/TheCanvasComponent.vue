@@ -2,13 +2,14 @@
   <div @mousedown="startDragging" @mouseup="endDragging" class="my-canvas" id="workspace"></div>
 </template>
 
+
 <script setup lang="ts">
 
 let isDragging: boolean = false;
 let startMouseX = 0;
 let startMouseY = 0;
 let startLeft = 0;
-const startTop = 0;
+let startTop = 0;
 
 
 /* *CLICK INIZIALE */
@@ -23,6 +24,7 @@ function startDragging(event: MouseEvent) {
 
   // Estrazione della posizione corrente
   startLeft = workspace.offsetLeft;
+  startTop = workspace.offsetTop;
 
   // Flag per seguire il dragging
   isDragging = true;
@@ -65,7 +67,6 @@ function endDragging() {
   isDragging = false;
 }
 </script>
-
 <style lang="scss" scoped>
 body {
   overflow: hidden;
