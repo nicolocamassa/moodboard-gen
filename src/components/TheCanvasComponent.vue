@@ -1,93 +1,15 @@
 <template>
   <div class="canvas-container">
-    <div @mousedown="startDragging" @mouseup="endDragging" class="my-canvas" id="workspace">
-      <img src="/src/assets/image.png" alt="">
-    </div>
+    <ImagesComponent />
   </div>
 
 </template>
 
 <script setup lang="ts">
-let isDragging: boolean = false;
-let startMouseX = 0;
-let startMouseY = 0;
-let startLeft = 0;
-let startTop = 0;
-
-/* *CLICK INIZIALE */
-function startDragging(event: MouseEvent) {
-
-  const workspace = document.getElementById("workspace")
-  if (!workspace) return;
-
-  // Coordinate del mouse all’inizio del drag
-  startMouseX = event.clientX;
-  startMouseY = event.clientY;
-
-  // Estrazione della posizione corrente
-  startLeft = workspace.offsetLeft;
-  startTop = workspace.offsetTop;
-
-  // Flag per seguire il dragging
-  isDragging = true;
-
-  removeEventListener("mouseup", trackCoordinates)
-
-  // Inizia il tracciamento delle coordinate del mouse
-  if (event.button == 0) {
-    window.addEventListener("mousemove", trackCoordinates)
-  }
-}
-
-// *MOVIMENTO MOUSE E TRACCIAMENTO COORDINATE
-function trackCoordinates(event: MouseEvent) {
-  if (!isDragging) return
-
-  // Ottengo le coordinate dell'angolo del canvas
-  const workspace = document.getElementById("workspace");
-  if (!workspace) return;
-
-  // Coordinate mouse e canvas
-  const { clientX: mouseX, clientY: mouseY } = event;
-  const { x: canvasX, y: canvasY, width, height } = workspace.getBoundingClientRect();
-
-  // Calcolo della posizione del click per lo spostamento
-  const deltaX = event.clientX - startMouseX;
-  const deltaY = event.clientY - startMouseY;
-
-  if (workspace.parentElement) {
-    const limitedArea = workspace.parentElement.getBoundingClientRect();
-
-    // Calcolo limite spostamento
-    const
-      x = Math.min(
-        Math.max(limitedArea.left, startLeft + deltaX),
-        limitedArea.right - width
-      ),
-
-      y = Math.min(
-        Math.max(limitedArea.top, startTop + deltaY),
-        limitedArea.bottom - height
-      );
-
-    console.log("Questo è min: ", limitedArea.right - width,)
-    console.log("questa è x: ", startLeft + deltaX)
-    // Spostamento dell'immagine
-    if (workspace) {
-      workspace.style.left = `${x}px`;
-      workspace.style.top = `${y}px`;
-    }
-  }
-
-  console.log("🖱️ MOVED coordinates:", { mouseX, mouseY, canvasX, canvasY });
-}
-
-// *STOP DEL DRAGGING
-function endDragging() {
-  isDragging = false;
-}
+import ImagesComponent from './ImagesComponent.vue';
 </script>
-<style lang="scss" scoped>
+
+<style lang="scss">
 .canvas-container {
   width: 100vw;
   height: 100vh;
@@ -103,6 +25,14 @@ function endDragging() {
     img {
       pointer-events: none;
       user-select: none;
+      max-width: 300px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+      transition: all 0.15s cubic-bezier(.25, .8, .25, 1);
+      transition-duration: 0.5s;
+    }
+
+    &:active img {
+      box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
     }
 
     &:hover {
@@ -113,5 +43,11 @@ function endDragging() {
       cursor: grabbing;
     }
   }
+}
+
+#drop_zone {
+  border: 5px solid blue;
+  width: 200px;
+  height: 100px;
 }
 </style>
